@@ -1,4 +1,4 @@
-# comet_cleave
+# Сomet Сleave
 
 Unity prototype. A ball player in the bottom-left shoots by spending its own size: the longer the hold, the larger the shot and the obstacle infection radius. The ball hops along the cleared path to the goal; the door opens at 5 meters. The run is lost if the ball is fully spent on a shot, or if there is not enough size left to clear the path. The starting size includes a 20% margin.
 
