@@ -70,18 +70,10 @@ namespace Gameplay
         void IInitializable.Initialize()
         {
             ResetGesture();
-            OnHoldBegan += LogHoldBegan;
-            OnHoldTick += LogHoldTick;
-            OnHoldReleased += LogHoldReleased;
-            OnHoldCanceled += LogHoldCanceled;
         }
 
         void IDisposable.Dispose()
         {
-            OnHoldBegan -= LogHoldBegan;
-            OnHoldTick -= LogHoldTick;
-            OnHoldReleased -= LogHoldReleased;
-            OnHoldCanceled -= LogHoldCanceled;
             ResetGesture();
         }
 
@@ -90,26 +82,6 @@ namespace Gameplay
             _isGestureActive = false;
             _isGestureCanceled = false;
             _gestureStartTime = 0f;
-        }
-
-        private void LogHoldBegan()
-        {
-            Debug.Log("began");
-        }
-
-        private void LogHoldTick(float duration)
-        {
-            Debug.Log(duration);
-        }
-
-        private void LogHoldReleased(float duration)
-        {
-            Debug.Log("released " + duration);
-        }
-
-        private void LogHoldCanceled()
-        {
-            Debug.Log("canceled");
         }
     }
 }
