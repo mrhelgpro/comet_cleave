@@ -1,0 +1,73 @@
+---
+description: Unity C# code style for comet_cleave
+globs:
+  - Assets/- Game -/**
+alwaysApply: false
+---
+
+# Code style
+
+Full guide: [docs/CODE_STYLE.md](../../docs/CODE_STYLE.md)
+
+## Agent
+
+- Preserve existing style; fix logic only.
+- Never add comments in code. Never delete existing comments (author reminders).
+- Explanations to user: **Ukrainian**.
+- Unity C# unless stated otherwise.
+
+## Naming
+
+- PascalCase public; `_camelCase` private; `SAVE_KEY` for save constants.
+- **No abbreviations:** `identifier` not `id`, `amount` not `amt`.
+- UI: `UI` prefix (`UICardCollectionPresenter`).
+- Suffixes: `System`, `Config`, `Save`, `ItemAsset`, `ItemRuntime`, `ItemSave`.
+
+## Formatting
+
+- Multiline `if` / `else` / `switch` **with braces always**.
+- Prefer `foreach`; **no LINQ**.
+- `var` only when type is obvious from the right side.
+
+## Examples
+
+```csharp
+if (_itemCollection.TryGetValue(identifier, out var runtime))
+{
+    runtime.Amount.AddValue(amount);
+    OnSaveRequired?.Invoke();
+}
+
+foreach (var cardItemRuntime in _cardCollection.Values)
+{
+    result.Add(cardItemRuntime);
+}
+
+void ISavable.Load()
+{
+    var save = SaveLoadStorage.Load<CardSave>(SAVE_KEY);
+}
+
+[Inject]
+public void Inject(CardSystem cardSystem)
+{
+    _cardSystem = cardSystem;
+}
+```
+
+## out parameters
+
+- `out` is fine when the caller uses the value (`TryGetValue`, `TryGetReward`).
+- `out _` means this caller does not need that value. Add a `bool` method (`HasClaimableReward`, `IsClaimableReward`).
+- Do not discard `out`, and do not implement that method as `return TryGetSomething(out _)`.
+- Keep a shared search private. Each public method returns only what its caller uses.
+
+## Interfaces
+
+- Explicit: `void ISavable.Load()`, `void IInitializable.Initialize()`.
+- MonoBehaviour: `[Inject]` method, not constructor.
+
+## Systems
+
+- After persisted mutation: `OnSaveRequired?.Invoke()`.
+- See [docs/SYSTEMS.md](../../docs/SYSTEMS.md) for Load / Initialize.

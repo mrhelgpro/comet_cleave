@@ -1,0 +1,62 @@
+---
+description: Core system lifecycle and Config / Runtime / Save layers
+globs:
+  - Assets/- Game -/Scripts/Core/**
+alwaysApply: false
+---
+
+# Core systems
+
+Full guide: [docs/SYSTEMS.md](../../docs/SYSTEMS.md) · Framework: [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
+
+## Lifecycle
+
+```text
+Constructor → ISavable.Load() (all systems) → IInitializable.Initialize() (bind order)
+```
+
+```csharp
+void ISavable.Load()
+{
+    var save = SaveLoadStorage.Load<MySave>(SAVE_KEY);
+    foreach (var asset in _config.AssetCollection)
+    {
+        // merge save → new ItemRuntime(asset, ...)
+    }
+}
+
+public void Initialize()
+{
+    _otherSystem.OnEvent += Handler; // not in Load()
+}
+```
+
+## Layers (collection-based)
+
+| Layer | Example |
+|-------|---------|
+| Config | `CurrencyConfig` : `BaseConfig` |
+| Item asset | `CurrencyItemAsset` : `BaseItemAsset` |
+| Item runtime | `CurrencyItemRuntime` + `AmountProperty` |
+| Item save | `CurrencyItemSave` in `CurrencySave` |
+
+## Mutations and dirty save
+
+After **any** change to persisted runtime state, call `OnSaveRequired?.Invoke()`.  
+`SaveLoadService` marks the savable **dirty**; `ExecuteSaves()` (app pause/quit, Core shutdown) calls `ISavable.Save()` only for dirty systems.
+
+Do **not** call `SaveLoadStorage.Save` from gameplay code.
+
+```csharp
+public void AddAmount(string identifier, int amount)
+{
+    var itemRuntime = GetItemRuntime(identifier);
+
+    itemRuntime.Amount.AddValue(amount);
+    OnSaveRequired?.Invoke();
+}
+```
+
+Every public mutator that changes saved data must end with `OnSaveRequired?.Invoke()` (add, remove, unlock, level up, etc.).
+
+UI reads **Runtime**, never save DTOs.

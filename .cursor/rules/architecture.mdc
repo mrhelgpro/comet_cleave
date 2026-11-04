@@ -1,0 +1,42 @@
+---
+description: Game architecture - DI, lifecycle, save/load (Engine + Core)
+globs:
+  - Assets/- Game -/**
+alwaysApply: false
+---
+
+# Game architecture (comet_cleave)
+
+Full guide: [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md) · Systems: [docs/SYSTEMS.md](../../docs/SYSTEMS.md) · Entry: [AGENTS.md](../../AGENTS.md)
+
+**Scope:** Engine + Core framework. Gameplay is product-specific.
+
+## Containers
+
+- **Root:** `CoreContext` → `GameContainer`. `DontDestroyOnLoad`. `CoreContext.IsReady`.
+- **Content scene:** `SceneContext` → child container, parent = Core.
+- **BootstrapScene** is Play Mode / build index 0 and only loads **CoreScene**. **CoreScene** is the runtime root. Do not rename it.
+
+## Initialize order (`GameContainer`)
+
+1. `Create` → 2. `InjectConstruct` → 3. `InjectSceneObjects`
+4. `RegisterSavables` + scoped `ExecuteLoads(savables)` (this container only)
+5. `ITickable` register → 6. `Initialize()` (bind order, then scene objects)
+
+Scene destroy: `ExecuteSaves()` then child `Dispose`. Root destroy: `SaveLoadService.Dispose()` only on root.
+
+## DO / DON'T
+
+```csharp
+container.Bind<MyCoreSystem>();            // ISavable — Core installer
+container.Bind<MySceneSystem>();           // ISavable — scene installer (scoped load)
+OnSaveRequired?.Invoke();                // after runtime mutation
+[Inject] public void Inject(MySystem s) { }
+```
+
+- No `Container.Get<T>()`. No manual `ExecuteLoads()` / `SaveLoadService.Dispose()` from UI. No `Load()` for subscriptions or scene loads.
+
+## Docs
+
+- Framework: `docs/ARCHITECTURE.md`
+- Systems (Load, Config, Runtime, Save): `docs/SYSTEMS.md`
