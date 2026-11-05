@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 
 public class ClearProgress
@@ -8,3 +9,4 @@ public class ClearProgress
         ProgressSaveStorage.Clear();
     }
 }
+#endif

@@ -1,7 +1,7 @@
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
@@ -10,6 +10,7 @@ namespace Gameplay
 {
     public class ObstacleZone : MonoBehaviour
     {
+#if UNITY_EDITOR
         [SerializeField] private GameObject _obstaclePrefab;
         [SerializeField] private float _outerRadius = 11f;
         [SerializeField] private float _emptyRadius = 3.8f;
@@ -26,7 +27,6 @@ namespace Gameplay
 
         [SerializeField] private int _seed = 1;
 
-#if UNITY_EDITOR
         [Button]
         private void Generate()
         {
