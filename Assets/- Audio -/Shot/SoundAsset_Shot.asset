@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SoundAsset_Shot
   m_EditorClassIdentifier: 
   _audioClip: {fileID: 8300000, guid: 713d7c98960424466bbbc39aef0a4d39, type: 3}
-  _volume: 0.7
+  _volume: 1
