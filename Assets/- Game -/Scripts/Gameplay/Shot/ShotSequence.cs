@@ -40,12 +40,7 @@ namespace Gameplay
             _obstacleClearing = obstacleClearing;
             _obstacleMask = LayerMask.GetMask("Obstacle");
         }
-
-        public void SetRoundActive(bool isActive)
-        {
-            _isRoundActive = isActive;
-        }
-
+        
         void IInitializable.Initialize()
         {
             _holdInputController.OnHoldBegan += HoldBegan;
@@ -73,6 +68,11 @@ namespace Gameplay
             _chargeTransfer.OnChargeChanged -= ChargeChanged;
             _chargeTransfer.OnSourceDepleted -= SourceDepleted;
             ReleaseShot();
+        }
+        
+        public void SetRoundActive(bool isActive)
+        {
+            _isRoundActive = isActive;
         }
 
         private bool CanAcceptHold()

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.ShotConfig
   _shotSpeed: 10
   _shotMaxDistance: 30
-  _radiusPerSize: 4
+  _radiusPerSize: 5
   _charge:
     _transferPerSecond: 0.45
     _minimumCharge: 0.1

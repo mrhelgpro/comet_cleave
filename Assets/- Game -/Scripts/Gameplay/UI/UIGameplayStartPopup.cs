@@ -9,13 +9,7 @@ namespace Gameplay
         [SerializeField] private UIButtonClick _uiButtonClick;
 
         private Action _onCompleted;
-
-        public void Open(Action onCompleted)
-        {
-            _onCompleted = onCompleted;
-            gameObject.SetActive(true);
-        }
-
+        
         protected override void Enabled()
         {
             _uiButtonClick.OnClick += ButtonClicked;
@@ -26,6 +20,12 @@ namespace Gameplay
             _uiButtonClick.OnClick -= ButtonClicked;
             _uiButtonClick.transform.DOKill();
             _onCompleted = null;
+        }
+        
+        public void Open(Action onCompleted)
+        {
+            _onCompleted = onCompleted;
+            gameObject.SetActive(true);
         }
 
         private void ButtonClicked()
