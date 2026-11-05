@@ -33,18 +33,18 @@ namespace Gameplay
 
         public void Advance(float deltaTime)
         {
-            if (SourceRemaining <= _chargeSettings.CriticalRemaining)
+            if (SourceRemaining <= _chargeSettings.LossSize)
             {
                 return;
             }
 
             var transfer = _chargeSettings.TransferPerSecond * deltaTime;
-            var available = SourceRemaining - _chargeSettings.CriticalRemaining;
+            var available = SourceRemaining - _chargeSettings.LossSize;
 
             if (transfer >= available)
             {
                 ChargeAmount += available;
-                SourceRemaining = _chargeSettings.CriticalRemaining;
+                SourceRemaining = _chargeSettings.LossSize;
                 OnChargeChanged?.Invoke(SourceRemaining, ChargeAmount);
                 OnSourceDepleted?.Invoke();
                 return;
@@ -57,13 +57,34 @@ namespace Gameplay
 
         public bool TryCommit()
         {
-            if (ChargeAmount < _chargeSettings.MinimumCommit)
+            if (!TryTransferMinimumCharge() || ChargeAmount < _chargeSettings.MinimumCommit)
             {
                 Refund();
                 return false;
             }
 
             OnChargeCommitted?.Invoke(ChargeAmount);
+            return true;
+        }
+
+        private bool TryTransferMinimumCharge()
+        {
+            if (ChargeAmount >= _chargeSettings.MinimumCharge)
+            {
+                return true;
+            }
+
+            var deficit = _chargeSettings.MinimumCharge - ChargeAmount;
+            var available = SourceRemaining - _chargeSettings.LossSize;
+
+            if (available < deficit)
+            {
+                return false;
+            }
+
+            SourceRemaining -= deficit;
+            ChargeAmount += deficit;
+            OnChargeChanged?.Invoke(SourceRemaining, ChargeAmount);
             return true;
         }
 

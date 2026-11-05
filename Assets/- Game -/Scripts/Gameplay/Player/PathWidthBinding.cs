@@ -9,6 +9,8 @@ namespace Gameplay
         private Vector3 _baseScale;
         private bool _hasBaseScale;
 
+        public float SurfaceHeight => transform.position.y + transform.lossyScale.y * 0.5f;
+
         public void SetWidth(float width)
         {
             CaptureBaseScale();

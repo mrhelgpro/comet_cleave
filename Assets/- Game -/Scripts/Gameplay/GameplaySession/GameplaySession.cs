@@ -186,6 +186,7 @@ namespace Gameplay
             }
 
             _shotScale.SetUniform(chargeAmount);
+            RestOnLane(_shotScale.transform);
         }
 
         private void SourceDepleted()
@@ -323,9 +324,16 @@ namespace Gameplay
             }
 
             var chargeSettings = _shotConfig.Charge;
-            var minimumToContinue = chargeSettings.CriticalRemaining + chargeSettings.MinimumCommit;
+            var requiredShot = chargeSettings.MinimumCharge;
 
-            if (_chargeTransfer.SourceRemaining <= minimumToContinue)
+            if (chargeSettings.MinimumCommit > requiredShot)
+            {
+                requiredShot = chargeSettings.MinimumCommit;
+            }
+
+            var minimumToContinue = chargeSettings.LossSize + requiredShot;
+
+            if (_chargeTransfer.SourceRemaining < minimumToContinue)
             {
                 SetState(State.Lost);
                 return;
@@ -502,6 +510,23 @@ namespace Gameplay
             {
                 route.GetTile(index).SetWidth(size);
             }
+
+            RestOnLane(_playerAdvance.transform);
+        }
+
+        private void RestOnLane(Transform body)
+        {
+            var route = _playerAdvance.Route;
+
+            if (route == null || route.TileCount == 0)
+            {
+                return;
+            }
+
+            var radius = body.lossyScale.y * 0.5f;
+            var position = body.position;
+            position.y = route.GetTile(0).SurfaceHeight + radius;
+            body.position = position;
         }
 
         private void ReleaseShot()

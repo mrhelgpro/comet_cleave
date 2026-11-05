@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace Gameplay
@@ -10,19 +11,26 @@ namespace Gameplay
         [SerializeField] private UIGameplayStartPopup _uiStartPopup;
         [SerializeField] private UIGameplayVictoryPopup _uiVictoryPopup;
         [SerializeField] private UIGameplayDefeatPopup _uiDefeatPopup;
+        [SerializeField] private TMP_Text _chargeValue;
 
         private GameplaySession _gameplaySession;
+        private ChargeTransfer _chargeTransfer;
+        private PlayerConfig _playerConfig;
 
         [Inject]
-        public void Inject(GameplaySession gameplaySession)
+        public void Inject(GameplaySession gameplaySession, ChargeTransfer chargeTransfer, PlayerConfig playerConfig)
         {
             _gameplaySession = gameplaySession;
+            _chargeTransfer = chargeTransfer;
+            _playerConfig = playerConfig;
         }
 
         void IInitializable.Initialize()
         {
             _uiSettingsButtonClick.OnClick += SettingsButtonClicked;
             _gameplaySession.OnStateChanged += StateChanged;
+            _chargeTransfer.OnChargeChanged += ChargeChanged;
+            _chargeValue.raycastTarget = false;
             ApplyState(_gameplaySession.CurrentState);
         }
 
@@ -30,12 +38,15 @@ namespace Gameplay
         {
             _uiSettingsButtonClick.OnClick -= SettingsButtonClicked;
 
-            if (_gameplaySession == null)
+            if (_gameplaySession != null)
             {
-                return;
+                _gameplaySession.OnStateChanged -= StateChanged;
             }
 
-            _gameplaySession.OnStateChanged -= StateChanged;
+            if (_chargeTransfer != null)
+            {
+                _chargeTransfer.OnChargeChanged -= ChargeChanged;
+            }
         }
 
         protected override void Enabled()
@@ -56,8 +67,47 @@ namespace Gameplay
             ApplyState(state);
         }
 
+        private void ChargeChanged(float sourceRemaining, float chargeAmount)
+        {
+            ApplyCharge(sourceRemaining);
+        }
+
+        private void ApplyCharge(float sourceRemaining)
+        {
+            _chargeValue.text = $"{RemainingPercent(sourceRemaining)}%";
+        }
+
+        private int RemainingPercent(float sourceRemaining)
+        {
+            var startSize = _playerConfig.StartSize;
+
+            if (startSize <= 0f)
+            {
+                return 0;
+            }
+
+            return Mathf.Clamp(Mathf.RoundToInt(sourceRemaining / startSize * 100f), 0, 100);
+        }
+
+        private static bool ShowsCharge(GameplaySession.State state)
+        {
+            return state is GameplaySession.State.Ready
+                or GameplaySession.State.Charging
+                or GameplaySession.State.ShotInFlight
+                or GameplaySession.State.Clearing
+                or GameplaySession.State.Advancing;
+        }
+
         private void ApplyState(GameplaySession.State state)
         {
+            var showCharge = ShowsCharge(state);
+            _chargeValue.gameObject.SetActive(showCharge);
+
+            if (showCharge)
+            {
+                ApplyCharge(_chargeTransfer.SourceRemaining);
+            }
+
             if (state == GameplaySession.State.WaitingToStart)
             {
                 _uiVictoryPopup.gameObject.SetActive(false);
@@ -70,7 +120,7 @@ namespace Gameplay
             {
                 _uiStartPopup.gameObject.SetActive(false);
                 _uiDefeatPopup.gameObject.SetActive(false);
-                _uiVictoryPopup.Open(ContinueClicked);
+                _uiVictoryPopup.Open(RemainingPercent(_chargeTransfer.SourceRemaining), ContinueClicked);
                 return;
             }
 
@@ -78,7 +128,7 @@ namespace Gameplay
             {
                 _uiStartPopup.gameObject.SetActive(false);
                 _uiVictoryPopup.gameObject.SetActive(false);
-                _uiDefeatPopup.Open(ContinueClicked);
+                _uiDefeatPopup.Open(RemainingPercent(_chargeTransfer.SourceRemaining), ContinueClicked);
                 return;
             }
 

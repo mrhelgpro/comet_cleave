@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8b4c1a27d6f4c0e9a3b5d7f1e2c4a80, type: 3}
   m_Name: ShotConfig_Gameplay
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.ShotConfig
-  _shotSpeed: 14
+  _shotSpeed: 10
   _shotMaxDistance: 30
-  _radiusPerSize: 5
+  _radiusPerSize: 4
   _charge:
     _transferPerSecond: 0.45
     _minimumCommit: 0
-    _criticalRemaining: 0.28
+    _minimumCharge: 0.1
+    _lossSize: 0.15
   _shotPrefab: {fileID: 1000000000000000001, guid: 395d459c269a4e6a99e88f9a4309330f, type: 3}
