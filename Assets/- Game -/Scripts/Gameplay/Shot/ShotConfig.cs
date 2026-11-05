@@ -10,11 +10,13 @@ namespace Gameplay
         [SerializeField] private float _radiusPerSize;
         [SerializeField] private ChargeSettings _charge = new();
         [SerializeField] private GameObject _shotPrefab;
+        [SerializeField] private SoundAsset _shotSound;
 
         public float ShotSpeed => _shotSpeed;
         public float ShotMaxDistance => _shotMaxDistance;
         public float RadiusPerSize => _radiusPerSize;
         public ChargeSettings Charge => _charge;
         public GameObject ShotPrefab => _shotPrefab;
+        public SoundAsset ShotSound => _shotSound;
     }
 }

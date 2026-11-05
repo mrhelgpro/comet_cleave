@@ -1,50 +1,57 @@
 using System;
 using DG.Tweening;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Gameplay
 {
-    public class PlayerAdvance : MonoBehaviour
+    public class PlayerAdvance : MonoBehaviour, IInitializable, IDisposable
     {
         public event Action OnMoved;
         public event Action OnAdvanceCompleted;
 
-        [SerializeField] private PathRoute _route;
-
         private PlayerConfig _playerConfig;
+        private ChargeTransfer _chargeTransfer;
+        private PathRoute _route;
+        private ScaleBinding _scaleBinding;
         private Tween _jump;
-        private int _currentIndex;
-        private bool _isMoving;
 
-        public PathRoute Route => _route;
-        public int CurrentIndex => _currentIndex;
-        public bool IsMoving => _isMoving;
+        public int CurrentIndex { get; private set; }
+        public bool IsMoving { get; private set; }
 
         public bool IsComplete =>
-            _route != null && _route.PointCount > 0 && _currentIndex == _route.PointCount - 1 && !_isMoving;
+            _route != null && _route.PointCount > 0 && CurrentIndex == _route.PointCount - 1 && !IsMoving;
 
         [Inject]
-        public void Inject(PlayerConfig playerConfig)
+        public void Inject(PlayerConfig playerConfig, PathRoute route, ChargeTransfer chargeTransfer)
         {
             _playerConfig = playerConfig;
+            _chargeTransfer = chargeTransfer;
+            
+            _route = route;
         }
 
-        public void AdvanceTo(int pointIndex, float pointInset)
+        void IInitializable.Initialize()
         {
-            if (_isMoving || _route == null || pointIndex <= _currentIndex || pointIndex >= _route.PointCount)
+            _chargeTransfer.OnChargeChanged += ChargeChanged;
+        }
+
+        void IDisposable.Dispose()
+        {
+            _chargeTransfer.OnChargeChanged -= ChargeChanged;
+            _jump?.Kill();
+            _jump = null;
+
+            if (this == null)
             {
                 return;
             }
 
             transform.DOKill();
-            _isMoving = true;
-            JumpTo(_currentIndex + 1, pointIndex, pointInset, true);
         }
-
+        
         public void AdvanceToward(Vector3 destination)
         {
-            if (_isMoving || _route == null)
+            if (IsMoving || _route == null)
             {
                 return;
             }
@@ -60,10 +67,12 @@ namespace Gameplay
             }
 
             transform.DOKill();
-            _isMoving = true;
+            IsMoving = true;
+            
             var jumpSettings = _playerConfig.Jump;
             transform.DOPunchScale(jumpSettings.Punch, jumpSettings.PunchDuration).SetLink(gameObject);
             var jump = transform.DOJump(destination, jumpSettings.Height, 1, jumpSettings.Duration).SetLink(gameObject);
+            
             jump.OnUpdate(RaiseMoved);
             jump.OnComplete(() =>
             {
@@ -73,26 +82,55 @@ namespace Gameplay
                 }
 
                 _jump = null;
-                _isMoving = false;
+                IsMoving = false;
                 Reach(destination);
                 OnAdvanceCompleted?.Invoke();
             });
+            
             _jump = jump;
+        }
+        
+        private void ChargeChanged(float sourceRemaining, float chargeAmount)
+        {
+            SetSize(sourceRemaining);
+        }
+        
+        private void SetSize(float size)
+        {
+            if (_scaleBinding == null)
+            {
+                _scaleBinding = GetComponent<ScaleBinding>();
+            }
+
+            _scaleBinding.SetUniform(size);
+            var route = _route;
+
+            if (route == null)
+            {
+                return;
+            }
+
+            for (var index = 0; index < route.TileCount; index++)
+            {
+                route.GetTile(index).SetWidth(size);
+            }
+
+            RestOnLane();
         }
 
         private void Reach(Vector3 position)
         {
-            while (_currentIndex + 1 < _route.PointCount)
+            while (CurrentIndex + 1 < _route.PointCount)
             {
-                var previous = _route.GetPoint(_currentIndex).position;
-                var next = _route.GetPoint(_currentIndex + 1).position;
+                var previous = _route.GetPoint(CurrentIndex).position;
+                var next = _route.GetPoint(CurrentIndex + 1).position;
                 var segment = next - previous;
                 segment.y = 0f;
                 var length = segment.magnitude;
 
                 if (length <= 0.0001f)
                 {
-                    _currentIndex++;
+                    CurrentIndex++;
                     continue;
                 }
 
@@ -104,91 +142,28 @@ namespace Gameplay
                     break;
                 }
 
-                _currentIndex++;
+                CurrentIndex++;
             }
         }
 
-        private void JumpTo(int index, int pointIndex, float pointInset, bool withPunch)
+        private void RestOnLane()
         {
-            var restingHeight = transform.position.y;
-            var destination = _route.GetPoint(index).position;
-            destination.y = restingHeight;
+            var route = _route;
 
-            if (index == pointIndex && pointInset > 0f)
+            if (route == null || route.TileCount == 0)
             {
-                destination = PullBack(destination, _route.GetPoint(index - 1).position, pointInset, restingHeight);
+                return;
             }
 
-            var jumpSettings = _playerConfig.Jump;
-
-            if (withPunch)
-            {
-                transform.DOPunchScale(jumpSettings.Punch, jumpSettings.PunchDuration).SetLink(gameObject);
-            }
-
-            var jump = transform.DOJump(destination, jumpSettings.Height, 1, jumpSettings.Duration).SetLink(gameObject);
-            jump.OnUpdate(RaiseMoved);
-            jump.OnComplete(() =>
-            {
-                if (_jump != jump)
-                {
-                    return;
-                }
-
-                if (index < pointIndex)
-                {
-                    JumpTo(index + 1, pointIndex, pointInset, false);
-                    return;
-                }
-
-                _jump = null;
-                _currentIndex = pointIndex;
-                _isMoving = false;
-                OnAdvanceCompleted?.Invoke();
-            });
-            _jump = jump;
-        }
-
-        private static Vector3 PullBack(Vector3 destination, Vector3 previous, float pointInset, float restingHeight)
-        {
-            var along = destination - previous;
-            along.y = 0f;
-            var length = along.magnitude;
-
-            if (length <= 0.0001f)
-            {
-                return destination;
-            }
-
-            var inset = pointInset;
-
-            if (inset > length)
-            {
-                inset = length;
-            }
-
-            destination -= along / length * inset;
-            destination.y = restingHeight;
-            return destination;
+            var radius = transform.lossyScale.y * 0.5f;
+            var position = transform.position;
+            position.y = route.GetTile(0).SurfaceHeight + radius;
+            transform.position = position;
         }
 
         private void RaiseMoved()
         {
             OnMoved?.Invoke();
         }
-
-        private void OnDestroy()
-        {
-            _jump?.Kill();
-            transform.DOKill();
-        }
-
-#if UNITY_EDITOR
-        [Button]
-        private void AdvanceAcrossOne()
-        {
-            AdvanceTo(_currentIndex + 2, 0f);
-        }
-#endif
     }
 }

@@ -8,10 +8,11 @@ namespace Gameplay
     {
         public event Action OnCleared;
 
+        [SerializeField] private Collider _collider;
+        [SerializeField] private Renderer _renderer;
+
         private ObstacleRegistry _obstacleRegistry;
         private ObstacleConfig _obstacleConfig;
-        private Collider _collider;
-        private Renderer _renderer;
         private Tween _shake;
         private Tween _explosionDelay;
 
@@ -22,20 +23,14 @@ namespace Gameplay
         {
             get
             {
-                var collider = _collider != null ? _collider : GetComponent<Collider>();
                 var scale = transform.lossyScale.x;
 
-                if (collider is CapsuleCollider capsule)
+                return _collider switch
                 {
-                    return capsule.radius * scale;
-                }
-
-                if (collider is SphereCollider sphere)
-                {
-                    return sphere.radius * scale;
-                }
-
-                return scale * 0.5f;
+                    CapsuleCollider capsule => capsule.radius * scale,
+                    SphereCollider sphere => sphere.radius * scale,
+                    _ => scale * 0.5f
+                };
             }
         }
 
@@ -48,8 +43,6 @@ namespace Gameplay
 
         void IInitializable.Initialize()
         {
-            _collider = GetComponent<Collider>();
-            _renderer = GetComponent<Renderer>();
             _obstacleRegistry.Register(this);
         }
 
@@ -57,12 +50,7 @@ namespace Gameplay
         {
             KillPresentation();
 
-            if (_obstacleRegistry == null)
-            {
-                return;
-            }
-
-            _obstacleRegistry.Unregister(this);
+            _obstacleRegistry?.Unregister(this);
         }
 
         public void Consume()

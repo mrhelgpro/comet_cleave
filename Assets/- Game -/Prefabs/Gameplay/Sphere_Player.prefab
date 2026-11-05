@@ -135,4 +135,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9d4f2e16c3a4b7f0e8d5c2a1f9b4d63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.PlayerAdvance
-  _route: {fileID: 0}
+  _scaleBinding: {fileID: 1140000000000000006}

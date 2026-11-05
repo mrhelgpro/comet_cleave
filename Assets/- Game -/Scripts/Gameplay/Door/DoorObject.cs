@@ -4,43 +4,32 @@ using UnityEngine;
 
 namespace Gameplay
 {
-    public class DoorObject : MonoBehaviour
+    public class DoorObject : MonoBehaviour, IInitializable, ITickable, IDisposable
     {
         public event Action OnOpened;
 
-        [SerializeField] private PlayerAdvance _playerAdvance;
         [SerializeField] private Vector3 _openLocalPosition;
+        [SerializeField] private DoorConfig _doorConfig;
+        [SerializeField] private PlayerAdvance _playerAdvance;
 
-        private DoorConfig _doorConfig;
         private bool _isOpened;
 
-        [Inject]
-        public void Inject(DoorConfig doorConfig)
+        void IInitializable.Initialize()
         {
-            _doorConfig = doorConfig;
+            _isOpened = false;
         }
-
-        private void OnEnable()
+        
+        void IDisposable.Dispose()
         {
-            if (_playerAdvance == null)
+            if (this == null)
             {
                 return;
             }
 
-            _playerAdvance.OnMoved += PlayerAdvanceMoved;
+            transform.DOKill();
         }
-
-        private void OnDisable()
-        {
-            if (_playerAdvance == null)
-            {
-                return;
-            }
-
-            _playerAdvance.OnMoved -= PlayerAdvanceMoved;
-        }
-
-        private void PlayerAdvanceMoved()
+        
+        void ITickable.Tick()
         {
             if (_isOpened || _playerAdvance == null)
             {
@@ -64,14 +53,10 @@ namespace Gameplay
         {
             _isOpened = true;
 
-            if (_playerAdvance != null)
-            {
-                _playerAdvance.OnMoved -= PlayerAdvanceMoved;
-            }
-
             transform.DOLocalMove(_openLocalPosition, _doorConfig.SlideDuration)
                 .SetEase(Ease.OutQuad)
                 .SetLink(gameObject);
+
             OnOpened?.Invoke();
         }
     }

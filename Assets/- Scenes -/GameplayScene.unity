@@ -22933,13 +22933,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.GameplayInstaller
   _shotConfig: {fileID: 11400000, guid: 9c2e7a14b5d64f0e8a3c6d1f0b7e4a52, type: 2}
   _playerConfig: {fileID: 11400000, guid: 2e9b4a7c1d6f4a8e0c5b3d7f1a2e6c84, type: 2}
-  _doorConfig: {fileID: 11400000, guid: 3b8e1c5a7d2f4e0a9c6d4f1b8a3e5c72, type: 2}
   _obstacleConfig: {fileID: 11400000, guid: 5d2a8c1e7b4f4e0a9c6d3f1b8a5e7c42, type: 2}
   _levelRoot: {fileID: 710000000000000002}
+  _route: {fileID: 710000000000000005}
   _holdInputController: {fileID: 860000000000000005}
   _playerAdvance: {fileID: 730000000000002458}
   _doorObject: {fileID: 730000000000002491}
-  _scaleBinding: {fileID: 730000000000002457}
 --- !u!1001 &2029241361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24688,10 +24687,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 710000000000000002}
     m_Modifications:
-    - target: {fileID: 1140000000000000007, guid: aff69c7e4daa4dd1a0a0822d4e7a71f2, type: 3}
-      propertyPath: _route
-      value: 
-      objectReference: {fileID: 710000000000000005}
     - target: {fileID: 4000000000000000002, guid: aff69c7e4daa4dd1a0a0822d4e7a71f2, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.2
@@ -24849,8 +24844,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e8b1a73c5f4e2a9b6d0f8c1e7a4b52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.DoorObject
-  _playerAdvance: {fileID: 730000000000002458}
   _openLocalPosition: {x: 3, y: 0.9, z: 14}
+  _doorConfig: {fileID: 11400000, guid: 3b8e1c5a7d2f4e0a9c6d4f1b8a3e5c72, type: 2}
+  _playerAdvance: {fileID: 730000000000002458}
 --- !u!1 &730000000000002493
 GameObject:
   m_ObjectHideFlags: 0

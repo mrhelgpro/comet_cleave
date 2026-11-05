@@ -5,8 +5,6 @@ namespace Gameplay
     public class ChargeTransfer
     {
         public event Action<float, float> OnChargeChanged;
-        public event Action<float> OnChargeCommitted;
-        public event Action OnChargeCanceled;
         public event Action OnSourceDepleted;
 
         private readonly ChargeSettings _chargeSettings;
@@ -55,45 +53,32 @@ namespace Gameplay
             OnChargeChanged?.Invoke(SourceRemaining, ChargeAmount);
         }
 
-        public bool TryCommit()
-        {
-            if (!TryTransferMinimumCharge() || ChargeAmount < _chargeSettings.MinimumCommit)
-            {
-                Refund();
-                return false;
-            }
-
-            OnChargeCommitted?.Invoke(ChargeAmount);
-            return true;
-        }
-
-        private bool TryTransferMinimumCharge()
+        public void Commit()
         {
             if (ChargeAmount >= _chargeSettings.MinimumCharge)
             {
-                return true;
+                return;
             }
 
             var deficit = _chargeSettings.MinimumCharge - ChargeAmount;
             var available = SourceRemaining - _chargeSettings.LossSize;
 
-            if (available < deficit)
+            if (available >= deficit)
             {
-                return false;
+                SourceRemaining -= deficit;
+                ChargeAmount = _chargeSettings.MinimumCharge;
+                OnChargeChanged?.Invoke(SourceRemaining, ChargeAmount);
+                return;
             }
 
-            SourceRemaining -= deficit;
-            ChargeAmount += deficit;
-            OnChargeChanged?.Invoke(SourceRemaining, ChargeAmount);
-            return true;
-        }
+            if (available > 0f)
+            {
+                SourceRemaining = _chargeSettings.LossSize;
+            }
 
-        public void Refund()
-        {
-            SourceRemaining += ChargeAmount;
-            ChargeAmount = 0f;
+            ChargeAmount = _chargeSettings.MinimumCharge;
             OnChargeChanged?.Invoke(SourceRemaining, ChargeAmount);
-            OnChargeCanceled?.Invoke();
+            OnSourceDepleted?.Invoke();
         }
     }
 }

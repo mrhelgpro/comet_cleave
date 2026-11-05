@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6500000000000000005}
   - component: {fileID: 1140000000000000006}
   - component: {fileID: 1140000000000000007}
+  - component: {fileID: 1140000000000000008}
   m_Layer: 0
   m_Name: Sphere_Shot
   m_TagString: Untagged
@@ -135,3 +136,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e2d4a18c3f4e5b9a6d0f1c8e4b2a70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.ShotMotion
+--- !u!114 &1140000000000000008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1c4b8a63d2f4a5e9b7c0d1f8a6e3b52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.ShotBody
+  _scaleBinding: {fileID: 1140000000000000006}
+  _motion: {fileID: 1140000000000000007}

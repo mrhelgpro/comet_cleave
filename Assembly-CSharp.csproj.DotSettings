@@ -2,16 +2,21 @@
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cchainreactor/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Ccharge/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cchargetransfer/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cdoor/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cgameplaysession/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Choldinputcontroller/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cinstaller/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cobstacle/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cobstaclezone/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cpathadvance/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cplayer/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cprefabpool/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cprojectilemotion/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cproximitygate/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cscalebinding/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Csettings/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cshot/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cshotspawner/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=assets_005C_002D_0020game_0020_002D_005Cscripts_005Cgameplay_005Cui/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

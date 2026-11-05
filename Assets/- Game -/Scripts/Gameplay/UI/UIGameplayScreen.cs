@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Gameplay
 {
-    public class UIGameplayScreen : BaseBehaviour, IInitializable, IDisposable
+    public class UIGameplayScreen : MonoBehaviour, IInitializable, IDisposable
     {
         [SerializeField] private UIButtonClick _uiSettingsButtonClick;
         [SerializeField] private UIGameplaySettingsPopup _uiGameplaySettingsPopup;
@@ -49,14 +49,6 @@ namespace Gameplay
             }
         }
 
-        protected override void Enabled()
-        {
-        }
-
-        protected override void Disabled()
-        {
-        }
-
         private void SettingsButtonClicked()
         {
             _uiGameplaySettingsPopup.gameObject.SetActive(true);
@@ -91,11 +83,7 @@ namespace Gameplay
 
         private static bool ShowsCharge(GameplaySession.State state)
         {
-            return state is GameplaySession.State.Ready
-                or GameplaySession.State.Charging
-                or GameplaySession.State.ShotInFlight
-                or GameplaySession.State.Clearing
-                or GameplaySession.State.Advancing;
+            return state == GameplaySession.State.Playing;
         }
 
         private void ApplyState(GameplaySession.State state)

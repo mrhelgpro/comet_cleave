@@ -127,3 +127,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c3a0d49f7b4e2c1a5d8f3b0c4e7a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.ObstacleObject
+  _collider: {fileID: 6500000000000000005}
+  _renderer: {fileID: 2300000000000000004}

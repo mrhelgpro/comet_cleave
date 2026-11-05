@@ -28,10 +28,8 @@ namespace Gameplay
 
         public GameObject Get()
         {
-            for (var index = 0; index < _instances.Count; index++)
+            foreach (var instance in _instances)
             {
-                var instance = _instances[index];
-
                 if (instance.activeSelf)
                 {
                     continue;
@@ -61,10 +59,8 @@ namespace Gameplay
 
         public void Dispose()
         {
-            for (var index = 0; index < _instances.Count; index++)
+            foreach (var instance in _instances)
             {
-                var instance = _instances[index];
-
                 if (instance == null)
                 {
                     continue;

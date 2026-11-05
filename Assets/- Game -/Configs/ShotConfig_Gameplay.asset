@@ -17,7 +17,6 @@ MonoBehaviour:
   _radiusPerSize: 4
   _charge:
     _transferPerSecond: 0.45
-    _minimumCommit: 0
     _minimumCharge: 0.1
     _lossSize: 0.15
   _shotPrefab: {fileID: 1000000000000000001, guid: 395d459c269a4e6a99e88f9a4309330f, type: 3}
